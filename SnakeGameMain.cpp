@@ -146,20 +146,20 @@ void input_1p() {
 	if (_kbhit()) {
 		switch (_getch()) {
 		case 'w':
-			if (!(sk1.dir == DOWN && sk1.next))
-				sk1.dir = UP;
+			if (!(sk1.curDir == DOWN && sk1.next))
+				sk1.nextDir = UP;
 			break;
 		case 'a':
-			if (!(sk1.dir == RIGHT && sk1.next))
-				sk1.dir = LEFT;
+			if (!(sk1.curDir == RIGHT && sk1.next))
+				sk1.nextDir = LEFT;
 			break;
 		case 's':
-			if (!(sk1.dir == UP && sk1.next))
-				sk1.dir = DOWN;
+			if (!(sk1.curDir == UP && sk1.next))
+				sk1.nextDir = DOWN;
 			break;
 		case 'd':
-			if (!(sk1.dir == LEFT && sk1.next))
-				sk1.dir = RIGHT;
+			if (!(sk1.curDir == LEFT && sk1.next))
+				sk1.nextDir = RIGHT;
 			break;
 		case 'q':
 		case 'Q':
@@ -173,36 +173,36 @@ void input_2p() {
 	if (_kbhit()) {
 		switch (_getch()) {
 		case 'w':
-			if (!(sk1.dir == DOWN && sk1.next))
-				sk1.dir = UP;
+			if (!(sk1.curDir == DOWN && sk1.next))
+				sk1.nextDir = UP;
 			break;
 		case 'a':
-			if (!(sk1.dir == RIGHT && sk1.next))
-				sk1.dir = LEFT;
+			if (!(sk1.curDir == RIGHT && sk1.next))
+				sk1.nextDir = LEFT;
 			break;
 		case 's':
-			if (!(sk1.dir == UP && sk1.next))
-				sk1.dir = DOWN;
+			if (!(sk1.curDir == UP && sk1.next))
+				sk1.nextDir = DOWN;
 			break;
 		case 'd':
-			if (!(sk1.dir == LEFT && sk1.next))
-				sk1.dir = RIGHT;
+			if (!(sk1.curDir == LEFT && sk1.next))
+				sk1.nextDir = RIGHT;
 			break;
 		case 'i':
-			if (!(sk2.dir == DOWN && sk2.next))
-				sk2.dir = UP;
+			if (!(sk2.curDir == DOWN && sk2.next))
+				sk2.nextDir = UP;
 			break;
 		case 'j':
-			if (!(sk2.dir == RIGHT && sk2.next))
-				sk2.dir = LEFT;
+			if (!(sk2.curDir == RIGHT && sk2.next))
+				sk2.nextDir = LEFT;
 			break;
 		case 'k':
-			if (!(sk2.dir == UP && sk2.next))
-				sk2.dir = DOWN;
+			if (!(sk2.curDir == UP && sk2.next))
+				sk2.nextDir = DOWN;
 			break;
 		case 'l':
-			if (!(sk2.dir == LEFT && sk2.next))
-				sk2.dir = RIGHT;
+			if (!(sk2.curDir == LEFT && sk2.next))
+				sk2.nextDir = RIGHT;
 			break;
 		case 'q':
 		case 'Q':
@@ -217,7 +217,8 @@ void logic_1p() {
 	int tmp2X, tmp2Y;
 
 	// Update head location
-	switch (sk1.dir)
+	sk1.curDir = sk1.nextDir;
+	switch (sk1.curDir)
 	{
 	case UP:
 		sk1.headY--;
@@ -251,19 +252,22 @@ void logic_1p() {
 	if (sk1.isTailLoc(sk1.headX, sk1.headY))
 		gameOver = true;
 
+	// Check if the fruit was eaten
 	if (fr.isHere(sk1.headX, sk1.headY)) {
 		sk1.score += 10;
 		fr.newLocation();
 		sk1.hasEaten();
+		speed -= 2;
 	}
 }
 
 void logic_2p() {
 	int tmp1X = sk1.headX, tmp1Y = sk1.headY;
 	int tmp2X, tmp2Y;
-
+	
 	// Snake 1 - Update head & tail location
-	switch (sk1.dir)
+	sk1.curDir = sk1.nextDir;
+	switch (sk1.curDir)
 	{
 	case UP:
 		sk1.headY--;
@@ -291,7 +295,8 @@ void logic_2p() {
 	tmp1X = sk2.headX;
 	tmp1Y = sk2.headY;
 
-	switch (sk2.dir)
+	sk2.curDir = sk2.nextDir;
+	switch (sk2.curDir)
 	{
 	case UP:
 		sk2.headY--;
@@ -333,7 +338,7 @@ void logic_2p() {
 	// Check inter-collistions
 	if (sk1.isTailLoc(sk2.headX, sk2.headY))
 		gameOver = true;
-	if (sk2.isTailLoc(sk1.headX, sk2.headY))
+	if (sk2.isTailLoc(sk1.headX, sk1.headY))
 		gameOver = true;
 
 	// Check for fruit-eating
@@ -375,7 +380,7 @@ int main() {
 			input_2p();
 			logic_2p();
 			draw2Buffer_2p();
-			Sleep(150);
+			Sleep(speed-30);
 		}
 	}
 
