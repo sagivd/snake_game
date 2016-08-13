@@ -15,7 +15,7 @@ class Snake {
 public:
 	unsigned int headX, headY;
 	unsigned int score;
-	direction dir;
+	direction curDir, nextDir;
 
 	Segment *next;
 
