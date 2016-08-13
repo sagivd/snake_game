@@ -9,7 +9,7 @@ Snake::Snake() {
 	headX = (unsigned int)rand() % (Buffer::width - 2) + 1;
 	headY = (unsigned int)rand() % (Buffer::height - 2) + 1;
 	next = NULL;
-	dir = STOP;
+	curDir = STOP;
 }
 
 Snake::~Snake() {
